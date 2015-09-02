@@ -1,0 +1,13 @@
+[general]
+ff_cfg=C:\Program Files (x86)\Mozilla Firefox\firefox-example.cfg
+[single_parameter]
+count=4
+param1=pref|example.mozilla.param1|"value_for_param"
+param2=lockPref|another_example.mozilla.param|False
+param3=defaultPref|plugins.update.url|""
+param4=pref|auto.update.enable-empty_third_value_means_remove_this_line|
+[capability_policies]
+count=3
+policy1=pref|our_links|http://server.local.net|checkloaduri.enabled|"allAccess"
+policy2=pref|more_of_our_links|http://server2.local.net:4646|checkloaduri.enabled|"allAccess"|Clipboard.cutcopy|allAccess|Clipboard.paste|allAccess
+policy3=pref|old_policy-empty_third_value_means_remove_this_line|
