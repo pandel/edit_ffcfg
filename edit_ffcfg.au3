@@ -39,8 +39,8 @@ A parameter has to be written in the following format:
 	<preference type>|<parameter name>|<parameter value>
 
 	<preference type> is one of values: pref, lockPref, defaultPref, user_pref
-	<parameter name> is the exact name, ie. "auto.update.enabled", "social.active", ... BUT WITHOUT QUOTES!!!!!
-	<parameter value> value of parameter, only use quotes is these are part of the value
+	<parameter name> is the exact name, ie. "auto.update.enabled", "social.active", BUT WITHOUT QUOTES
+	<parameter value> value of parameter, only use quotes if these are part of the value
 
 All values have to be separated by a single | symbol.
 
@@ -83,7 +83,7 @@ Mandatory values:
 
 	<preference type> is one of values: pref, lockPref, defaultPref, user_pref
 	<policy name> policy name, ie. "my_policy", BUT WITHOUT QUOTES
-	<sites value> site to apply this policy to, ie. "http://my.server.local", "http://my.server.local:4646", BUT WITHOUT QUOTES
+	<sites value> site to apply this policy to, ie. "http://my.server.local", "http://my.server.local:4646"
 
 Optional values (multiple parameter<->value pairs possible):
 
@@ -675,8 +675,8 @@ Func _getopts()
 					'A parameter has to be written in the following format:' & @CRLF & @CRLF & _
 					@TAB & '<preference type>|<parameter name>|<parameter value>' & @CRLF & @CRLF & _
 					@TAB & '<preference type> is one of values: pref, lockPref, defaultPref, user_pref' & @CRLF & _
-					@TAB & '<parameter name> is the exact name, ie. "auto.update.enabled", "social.active", ... BUT WITHOUT QUOTES' & @CRLF & _
-					@TAB & '<parameter value> value of parameter, only use quotes is these are part of the value' & @CRLF & @CRLF & _
+					@TAB & '<parameter name> is the exact name, ie. "auto.update.enabled", "social.active", BUT WITHOUT QUOTES' & @CRLF & _
+					@TAB & '<parameter value> value of parameter, only use quotes if these are part of the value' & @CRLF & @CRLF & _
 					'All values have to be separated by a single | symbol.' & @CRLF & @CRLF & _
 					@TAB & 'a) Adding/Editing parameters:' & @CRLF & _
 					@TAB & '-----------------------------' & @CRLF & @CRLF & _
@@ -702,7 +702,7 @@ Func _getopts()
 					'Mandatory values:' & @CRLF & @CRLF & _
 					@TAB & '<preference type> is one of values: pref, lockPref, defaultPref, user_pref' & @CRLF & _
 					@TAB & '<policy name> policy name, ie. "my_policy", BUT WITHOUT QUOTES' & @CRLF & _
-					@TAB & '<sites value> site to apply this policy to, ie. "http://my.server.local", "http://my.server.local:4646", BUT WITHOUT QUOTES' & @CRLF & @CRLF & _
+					@TAB & '<sites value> site to apply this policy to, ie. "http://my.server.local", "http://my.server.local:4646"' & @CRLF & @CRLF & _
 					'Optional values (multiple parameter<->value pairs possible):' & @CRLF & @CRLF & _
 					@TAB & '<policy.parameter name> parameter name for this policy' & @CRLF & _
 					@TAB & '<policy.parameter value> parameter value for this policy' & @CRLF & @CRLF & _
