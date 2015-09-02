@@ -53,9 +53,9 @@ A parameter has to be written in the following format::
 
 	<preference type>|<parameter name>|<parameter value>
 
-- <preference type> is one of values: pref, lockPref, defaultPref, user_pref
-- <parameter name> is the exact name, ie. "auto.update.enabled", "social.active", ... BUT WITHOUT QUOTES!!!!!
-- <parameter value> value of parameter, only use quotes is these are part of the value
+- ``<preference type>`` is one of values: pref, lockPref, defaultPref, user_pref
+- ``<parameter name>`` is the exact name, ie. "auto.update.enabled", "social.active", ... BUT WITHOUT QUOTES!!!!!
+- ``<parameter value>`` value of parameter, only use quotes is these are part of the value
 
 All values have to be separated by a single | symbol.
 
@@ -101,14 +101,14 @@ A policy has to be written in the following format::
 
 Mandatory values:
 
-- <preference type> is one of values: pref, lockPref, defaultPref, user_pref
-- <policy name> policy name, ie. "my_policy", BUT WITHOUT QUOTES
-- <sites value> site to apply this policy to, ie. "http://my.server.local", "http://my.server.local:4646", BUT WITHOUT QUOTES
+- ``<preference type>`` is one of values: pref, lockPref, defaultPref, user_pref
+- ``<policy name>`` policy name, ie. "my_policy", BUT WITHOUT QUOTES
+- ``<sites value>`` site to apply this policy to, ie. "http://my.server.local", "http://my.server.local:4646", BUT WITHOUT QUOTES
 
 Optional values (multiple parameter<->value pairs possible):
 
-- <policy.parameter name> parameter name for this policy
-- <policy.parameter value> parameter value for this policy
+- ``<policy.parameter name>`` parameter name for this policy
+- ``<policy.parameter value>`` parameter value for this policy
 
 All values have to be separated by a single | symbol.
 
