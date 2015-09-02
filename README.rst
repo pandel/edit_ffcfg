@@ -1,7 +1,31 @@
 General
 =======
-
 Edit_ffcfg is a command line tool for manipulating Firefox auto-configuration files.
+
+Available command line options (--help)
+---------------------------------------
+
+-n      --no-test       No test mode, apply changes (default: test mode)
+-c      --config        Use different configuration file (ini file name WITHOUT extension)
+-i      --inidesc       Show INI file format description
+-d      --debug         Show detailed output on console
+-l      --log           Write logfile (optional: specify different logfile name)
+
+Regarding option -c / --config
+------------------------------
+
+You can use different configuration files in the program directory. Just use different names for the files
+(like config1.ini, my_config.ini, etc.) and specifiy them on the command line as follows::
+
+	edit_ffcfg --config=my_config
+
+or::
+
+	edit_ffcfg -c=my_config
+
+Be sure to omit the .ini extension!
+
+Default logfile: %TMP%\\edit_ffcfg\\edit_ffcfg.log
 
 
 INI format description:
