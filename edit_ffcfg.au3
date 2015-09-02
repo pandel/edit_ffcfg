@@ -4,7 +4,7 @@
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Comment=Programm zur Anpassung der firefox.cfg
 #AutoIt3Wrapper_Res_Description=Editiere firefox.cfg
-#AutoIt3Wrapper_Res_Fileversion=1.0.0.9
+#AutoIt3Wrapper_Res_Fileversion=1.0.0.15
 #AutoIt3Wrapper_Res_Fileversion_AutoIncrement=p
 #AutoIt3Wrapper_Res_LegalCopyright=Holger Pandel, 2015
 #AutoIt3Wrapper_Res_Language=1031
@@ -188,6 +188,8 @@ EndIf
 
 
 ; ---- MAIN ---------
+_debug("Running as user: " & @UserName)
+_debug("Profile dir: " & @UserProfileDir)
 ; Load ini data
 _getIniValues($iniName)
 ;x_display()
@@ -205,12 +207,32 @@ If $showmod Then _ArrayDisplay($arCfg, "Changed configuration", "", 96)
 If Not $test Then
 	writeFFCfg(x($iniName & ".general.ff_cfg"), $arCfg)
 Else
-	MsgBox(1, "edit_ffcfg Test mode", "Program running in test mode. Nothing will be changed! See --help for details...")
+	_debug("edit_ffcfg Test mode - Program running in test mode. Nothing will be changed! See --help for details...")
+	MsgBox(1, "edit_ffcfg Test mode", "Program running in test mode. Nothing will be changed! See --help for details...", 2)
 EndIf
 
 Exit 0
 
 ; ---------- subroutines ------------------------------------------------------------------------
+
+Func _getLeaf($leaf, $tab)
+	Local $str
+	If not IsObj($leaf) Then Return
+	$colKeys = $leaf.Keys
+	For $strKey in $colKeys
+		$str = ""
+		If IsArray($leaf.Item($strKey)) Then		
+			$str = $leaf.Item($strKey)[0]
+			For $i = 1 to Ubound($leaf.Item($strKey)) - 1
+				$str &= "|" & $leaf.Item($strKey)[$i]
+			Next
+			_debug($tab & $strKey & ' -> ' & $str)
+		Else
+			_debug($tab & $strKey & ' -> ' & $leaf.Item($strKey))
+		EndIf
+		_getLeaf($leaf.Item($strKey), $tab & "  ")
+	Next				
+EndFunc
 
 ; read INI file
 
@@ -220,23 +242,38 @@ Func _getIniValues($iniName)
 
 	Dim $appPath = $szDrive & $szDir
 	Dim $iniFile = $appPath & $iniName & ".ini"
-	Dim $rc, $cpm[3]
 	
-	_debug("Getting INI values...")
+	Dim $rc, $cpm[3], $msg, $str, $colKeys
+	
+	_debug("Getting INI values from: " & $iniFile)
 	
 	If FileExists($iniFile) Then ;--- global INI file found
-		_ReadAssocFromIni($iniName)
+		$rc = _ReadAssocFromIni2($iniFile)
+		If @error Then
+			_debug("Error while reading ini file. Errno: " & @error)
+		Else
+			_debug("Entries read: " & $rc)
+			_debug("Logging configuration:")
+			_debug("--------------- snip ------------------")
+			_getLeaf($_xHashCollection, "  ")
+			_debug("--------------- snip -----------------")
+		EndIf
+		
 	ElseIf FileExists($appPath & "edit_ffcfg.ini") Then
-		MsgBox(0 + 64, "Missing configuration file", "You specified the following INI file to use:" & @CRLF & @CRLF & _
+		$msg = "You specified the following INI file to use:" & @CRLF & @CRLF & _
 				$iniFile & @CRLF & @CRLF & _
 				"This file is not available, but an existing edit_ffcfg.ini in the" & @CRLF & _
 				"program directory was found. This file will not be overriden." & @CRLF & @CRLF & _
-				"Please check your command line value.")
+				"Please check your command line value."
+		_debug($msg)
+		MsgBox(0 + 64, "Missing configuration file", $msg, 5)
 		Exit 1
 	Else ;--- INI not existing, creating new one in script directory
-		MsgBox(0 + 64, "First Start", "You are going to use edit_ffcfg for the first time." & @CRLF & _
+		$msg = "You are going to use edit_ffcfg for the first time." & @CRLF & _
 				"A new INI file with example values will be created in the script directory." & @CRLF & _
-				"Please customize the INI file before using it.")
+				"Please customize the INI file before using it."
+		_debug($msg)
+		MsgBox(0 + 64, "First Start", $msg, 5)
 		
 		x($iniName & ".general.ff_cfg", "C:\Program Files (x86)\Mozilla Firefox\firefox-example.cfg")
 		
@@ -780,3 +817,47 @@ Func _getopts()
 	; write header to log
 	_writeLog(_formatIOText($sMsg))
 EndFunc
+
+; Author: MilesAhead
+; http://www.autoitscript.com/forum/topic/110768-itaskbarlist3/page__view__findpost__p__910631
+; read AssocArray from IniFile Section
+; returns number of items read - sets @error on failure
+
+; modified (original see AssoArray.au3): Holger Pandel, 2015: accept full path name of ini
+
+Func _ReadAssocFromIni2($myIni = 'config.ini', $mySection = '', $sSep = "|")
+	Local $szDrive, $szDir, $szFName, $szExt, $pathTemp
+
+	$pathTemp = _PathSplit(@ScriptFullPath, $szDrive, $szDir, $szFName, $szExt)
+
+	$sIni = $szFName
+	
+    If $mySection == '' Then
+        $aSection = IniReadSectionNames ($myIni); All sections
+        If @error Then 
+			_debug("Error while reading section names from: " & $myIni)
+			Return SetError(@error, 0, 0)
+		EndIf
+    Else
+        Dim $aSection[2] = [1,$mySection]; specific Section
+    EndIf
+
+    For $i = 1 To UBound($aSection)-1
+
+        Local $sectionArray = IniReadSection($myIni, $aSection[$i])
+        If @error Then
+			_debug("Error while reading section: " & $aSection[$i])
+			Return SetError(1, 0, 0)
+		EndIf
+        For $x = 1 To $sectionArray[0][0]
+            If StringInStr($sectionArray[$x][1], $sSep) then
+                $posS = _MakePosArray($sectionArray[$x][1], $sSep)
+            Else
+                $posS = $sectionArray[$x][1]
+            EndIf
+            x($sIni&"."&$aSection[$i]&"."&$sectionArray[$x][0], $posS)
+        Next
+
+    next
+    Return $sectionArray[0][0]
+EndFunc   ;==>_ReadAssocFromIni
